@@ -3,11 +3,17 @@ package prova;
 import java.io.IOException;
 import java.text.ParseException;
 
-public class Searcher {
+public class Searcher {a
 
 	public static void main(String[] args) throws ParseException, IOException {
-		Finder finder = new Finder("teste1", ".txt", "1/4/2022", 8, "teste 1", "/home/lucas/Documents/Prova");
 
-		// String name, String type, String date, int size, String content, String path	
+		String folder = "/home/lucas/Documents/Trabalho/thingable-front";
+		String file = "ring_buffer";
+		String type = ".js";
+		int size = 1671;
+
+		Finder finder = new Finder(type, file, size, folder);
+
+		// String name, String type, String date, int size, String content, String path
 	}
 }
