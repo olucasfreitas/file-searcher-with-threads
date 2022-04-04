@@ -38,12 +38,6 @@ public class Finder extends Thread {
 
 		// Inicio da execução da thread
 		start();
-		
-		try {
-			join();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
 	}
 
 	void findFile(String type, String name, int size, String path) throws IOException {
