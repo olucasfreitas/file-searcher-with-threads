@@ -3,17 +3,18 @@ package prova;
 import java.io.IOException;
 import java.text.ParseException;
 
-public class Searcher {a
+public class Searcher {
 
 	public static void main(String[] args) throws ParseException, IOException {
+		
+		//Variáveis para busca
+		String searchPath = "/home/lucas/Documents/Trabalho";
+		String fileName = "long-stack-trace-zone.umd.min";
+		String fileType = ".js";
+		int fileSize = 2193;
 
-		String folder = "/home/lucas/Documents/Trabalho/thingable-front";
-		String file = "ring_buffer";
-		String type = ".js";
-		int size = 1671;
-
-		Finder finder = new Finder(type, file, size, folder);
-
-		// String name, String type, String date, int size, String content, String path
+		Finder finder = new Finder(fileType, fileName, fileSize, searchPath);
+		// Argumentos necessários para busca e seus tipos 
+		// String name, String type, int size, String content, String path
 	}
 }
