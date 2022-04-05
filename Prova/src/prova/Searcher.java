@@ -9,11 +9,11 @@ public class Searcher {
 		
 		//Variáveis para busca
 		String searchPath = "/home/lucas/Documents/Trabalho";
-		String fileName = "long-stack-trace-zone.umd.min";
-		String fileType = ".js";
-		int fileSize = 2193;
+		String fileDate = "30/3/2022";
+		String fileType = ".json";
+		int fileSize = 200;
 
-		Finder finder = new Finder(fileType, fileName, fileSize, searchPath);
+		Finder finder = new Finder(fileType, fileDate, fileSize, searchPath);
 		// Argumentos necessários para busca e seus tipos 
 		// String name, String type, int size, String content, String path
 	}
