@@ -9,10 +9,12 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Finder extends Thread {
 	String type;
-	String name;
+	String date;
 	int size;
 	String path;
 	Thread thread = Thread.currentThread();
@@ -22,17 +24,17 @@ public class Finder extends Thread {
 	public void run() {
 		try {
 			// Aqui rodo a função de busca com os parâmetros recebidos no construtor
-			findFile(this.type, this.name, this.size, this.path);
+			findFile(this.type, this.date, this.size, this.path);
 		} catch (IOException e) {
 			// Print de possiveis erros
 			e.printStackTrace();
 		}
 	}
 
-	public Finder(String type, String name, int size, String path) throws IOException {
+	public Finder(String type, String date, int size, String path) throws IOException {
 		// Atribuição de valores recebidos no construtor
 		this.type = type;
-		this.name = name;
+		this.date = date;
 		this.size = size;
 		this.path = path;
 
@@ -40,12 +42,14 @@ public class Finder extends Thread {
 		start();
 	}
 
-	void findFile(String type, String name, int size, String path) throws IOException {
+	void findFile(String type, String date, int size, String path) throws IOException {
+		
+		// Lista de arquivos que vai ser printada no final
+		List<FileInfo> fileArray = new ArrayList<FileInfo>();
 
 		// Criação do da pasta onde vão ser executadas as buscas
 		File folder = new File(path);
 
-		// Loop que irá iterar sobre todos os arquivos da pasta instanciada
 		for (File file : folder.listFiles()) {
 			// Verificação se o arquivo na vez é um diretório
 			if (file.isDirectory()) {
@@ -55,24 +59,54 @@ public class Finder extends Thread {
 
 				// Criação de nova thread utilizando os argumentos
 				// recebidos junto do caminho criado
-				Finder newFinder = new Finder(type, name, size, newPath);
+				Finder newFinder = new Finder(type, date, size, newPath);
 
 			} else {
-				// Caso arquivo não seja um diretório, veficasse se os seus parâmetros
-				// condizem com os parâmetros recebidos
-				if (file.getName().contains(name + type) && file.length() == size) {
 
-					// Print do nome do arquivo, junto do nome da thread onde foi achado e do nome
-					// do diretório onde foi achado
-					System.out.println("Achei o arquivo " + file.getName() + " na " + thread.getName()
-							+ " dentro da pasta /" + file.getParentFile().getName());
-					// Programa para de executar
-					System.exit(0);
-				} else {
-					// Print caso não seja o arquivo que estamos procurando
-					System.out.println("Not a match on " + thread.getName());
+				String fileTime = getFileDate(file);
+				
+				// Caso arquivo não seja um diretório, verifica-se se algum dos parâmetros
+				// condizem com os parâmetros recebidos na função e se esse arquivo 
+				// já não está no array
+				if ((file.length() == size || 
+						fileTime.contains(date)|| 
+						file.getName().contains(type)) &&
+						!fileArray.contains(file)) {
+					
+					// Criação do objeto que vai conter as informações do arquvivo
+					FileInfo newFile = new FileInfo(file.getName(), 
+							thread.getName(), 
+							file.getParentFile().getName());
+
+					// Adição do objeto novo ao array de arquivos
+					fileArray.add(newFile);
 				}
 			}
 		}
+
+		// Print dos arquivos que atendem as condições
+		for (FileInfo file : fileArray) {
+			System.out.println("Achei o arquivo " + file.fileName + " na " + file.threadName + " dentro da pasta /"
+					+ file.parentName);
+		}
+	}
+
+	// Função para formatação da data
+	String getFileDate(File file) throws IOException {
+		Path filePath = Paths.get(file.getPath());
+
+		BasicFileAttributes fileAttributes = Files.readAttributes(filePath, BasicFileAttributes.class);
+
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(new Date(fileAttributes.creationTime().to(TimeUnit.MILLISECONDS)));
+
+		String finalDay = String.valueOf(calendar.get(Calendar.DAY_OF_MONTH));
+		String finalMonth = String.valueOf(calendar.get(Calendar.MONTH) + 1);
+		String finalYear = String.valueOf(calendar.get(Calendar.YEAR));
+
+		// Criação da data em formato D/M/YYYY
+		String finalDate = finalDay + "/" + finalMonth + "/" + finalYear;
+
+		return finalDate;
 	}
 }
